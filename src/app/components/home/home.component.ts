@@ -11,7 +11,8 @@ import { HttpService } from 'src/app/services/http.service';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   public sort!: string;
-  public games: Array<Game> | undefined;
+  public games: Array<Game> = []; // Inizializza come array vuoto
+  public filteredGames: Array<Game> = []; // Nuova proprietà per giochi filtrati
   private routeSub: Subscription | undefined;
   private gameSub: Subscription | undefined;
 
@@ -36,8 +37,18 @@ export class HomeComponent implements OnInit, OnDestroy {
       .getGameList(sort, search)
       .subscribe((gameList: APIResponse<Game>) => {
         this.games = gameList.results;
-        console.log(gameList);
+        this.filteredGames = gameList.results; // Inizializza i giochi filtrati con tutti i giochi
       });
+  }
+
+  filterGames(searchTerm: string): void {
+    if (searchTerm) {
+      this.filteredGames = this.games.filter(game =>
+        game.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    } else {
+      this.filteredGames = [...this.games]; // Reset della lista se la barra di ricerca è vuota
+    }
   }
 
   openGameDetails(id: string): void {
@@ -53,5 +64,4 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.routeSub.unsubscribe();
     }
   }
-
 }

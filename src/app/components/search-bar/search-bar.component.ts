@@ -1,22 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router';
-
 
 @Component({
   selector: 'app-search-bar',
   templateUrl: './search-bar.component.html',
-  styleUrl: './search-bar.component.scss'
+  styleUrls: ['./search-bar.component.scss']
 })
-export class SearchBarComponent implements OnInit {
+export class SearchBarComponent {
+  searchTerm: string = '';
+  @Output() searchEvent = new EventEmitter<string>();
 
   constructor(private router: Router) { }
 
-  ngOnInit(): void {
+  onSubmit() {
+    this.searchEvent.emit(this.searchTerm);
   }
-
-  onSubmit(form: NgForm) {
-    this.router.navigate(['search', form.value.search]);
-  }
-
 }
